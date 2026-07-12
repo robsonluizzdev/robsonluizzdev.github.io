@@ -62,27 +62,26 @@ export default function AdminExperience() {
     }
 
     try {
-      if (formData.id) {
+      const { id, ...payload } = formData;
+      if (id) {
         const { error } = await supabase
           .from('experiences')
-          .update(formData)
-          .eq('id', formData.id);
+          .update(payload)
+          .eq('id', id);
         if (error) throw error;
       } else {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('experiences')
-          .insert([formData])
-          .select();
+          .insert([payload]);
         if (error) throw error;
-        setExperiences([...experiences, ...(data || [])]);
       }
 
       await fetchExperiences();
       setEditing(null);
       setMessage('✅ Experiência salva!');
       setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setMessage('❌ Erro ao salvar');
+    } catch (err: any) {
+      setMessage(`❌ Erro ao salvar: ${err.message || 'tente novamente'}`);
       console.error(err);
     }
   }

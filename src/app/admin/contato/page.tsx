@@ -56,23 +56,25 @@ export default function AdminContact() {
     setSaving(true);
 
     try {
-      if (contact.id) {
+      const { id, ...payload } = contact;
+      if (id) {
         const { error } = await supabase
           .from('contact')
-          .update(contact)
-          .eq('id', contact.id);
+          .update(payload)
+          .eq('id', id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('contact')
-          .insert([contact]);
+          .insert([payload]);
         if (error) throw error;
       }
 
+      await fetchContact();
       setMessage('✅ Contato salvo com sucesso!');
       setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setMessage('❌ Erro ao salvar dados');
+    } catch (err: any) {
+      setMessage(`❌ Erro ao salvar: ${err.message || 'tente novamente'}`);
       console.error(err);
     } finally {
       setSaving(false);

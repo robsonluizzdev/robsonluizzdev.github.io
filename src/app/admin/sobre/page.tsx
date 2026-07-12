@@ -56,23 +56,25 @@ export default function AdminSobre() {
     setSaving(true);
 
     try {
-      if (data.id) {
+      const { id, ...payload } = data;
+      if (id) {
         const { error } = await supabase
           .from('about')
-          .update(data)
-          .eq('id', data.id);
+          .update(payload)
+          .eq('id', id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('about')
-          .insert([data]);
+          .insert([payload]);
         if (error) throw error;
       }
 
+      await fetchData();
       setMessage('✅ Dados salvos com sucesso!');
       setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setMessage('❌ Erro ao salvar dados');
+    } catch (err: any) {
+      setMessage(`❌ Erro ao salvar: ${err.message || 'tente novamente'}`);
       console.error(err);
     } finally {
       setSaving(false);

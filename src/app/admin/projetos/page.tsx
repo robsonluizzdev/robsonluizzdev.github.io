@@ -38,7 +38,15 @@ export default function AdminProjects() {
         .order('name');
 
       if (error) throw error;
-      setProjects(data || []);
+      // Map DB snake_case demo_url -> UI demoUrl
+      const mapped = (data || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        tech: p.tech || [],
+        demoUrl: p.demo_url || '',
+      }));
+      setProjects(mapped);
     } catch (err) {
       console.error('Erro ao carregar projetos:', err);
     } finally {
@@ -63,16 +71,23 @@ export default function AdminProjects() {
     }
 
     try {
+      // Map UI demoUrl -> DB snake_case demo_url, drop empty id
+      const payload = {
+        name: formData.name,
+        description: formData.description,
+        tech: formData.tech,
+        demo_url: formData.demoUrl || null,
+      };
       if (formData.id) {
         const { error } = await supabase
           .from('projects')
-          .update(formData)
+          .update(payload)
           .eq('id', formData.id);
         if (error) throw error;
       } else {
         const { error } = await supabase
           .from('projects')
-          .insert([formData]);
+          .insert([payload]);
         if (error) throw error;
       }
 
@@ -80,8 +95,8 @@ export default function AdminProjects() {
       setEditing(null);
       setMessage('✅ Projeto salvo!');
       setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      setMessage('❌ Erro ao salvar');
+    } catch (err: any) {
+      setMessage(`❌ Erro ao salvar: ${err.message || 'tente novamente'}`);
       console.error(err);
     }
   }

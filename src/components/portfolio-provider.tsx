@@ -30,7 +30,12 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
         about: aboutRes.data,
         technologies: techRes.data?.map((t: any) => t.name) || [],
         experiences: expRes.data || [],
-        projects: projRes.data || [],
+        projects: (projRes.data || []).map((p: any) => ({
+          name: p.name,
+          description: p.description,
+          tech: p.tech || [],
+          demoUrl: p.demo_url || undefined,
+        })),
         education: eduRes.data || [],
         contact: contactRes.data,
       });
