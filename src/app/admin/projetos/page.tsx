@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Save, Trash2, Plus, Edit2, X } from 'lucide-react';
+import { Save, Trash2, Plus, Edit2, X, Upload, Loader, ExternalLink } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -10,7 +10,10 @@ interface Project {
   description: string;
   tech: string[];
   demoUrl?: string;
+  screenshot?: string;
 }
+
+const BUCKET = 'projects';
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -22,9 +25,14 @@ export default function AdminProjects() {
     description: '',
     tech: [],
     demoUrl: '',
+    screenshot: '',
   });
   const [newTech, setNewTech] = useState('');
   const [message, setMessage] = useState('');
+  const [uploadingShot, setUploadingShot] = useState(false);
+  const [uploadingDemo, setUploadingDemo] = useState(false);
+  const shotRef = useRef<HTMLInputElement>(null);
+  const demoRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchProjects();
@@ -38,13 +46,13 @@ export default function AdminProjects() {
         .order('name');
 
       if (error) throw error;
-      // Map DB snake_case demo_url -> UI demoUrl
       const mapped = (data || []).map((p: any) => ({
         id: p.id,
         name: p.name,
         description: p.description,
         tech: p.tech || [],
         demoUrl: p.demo_url || '',
+        screenshot: p.screenshot || '',
       }));
       setProjects(mapped);
     } catch (err) {
@@ -54,8 +62,63 @@ export default function AdminProjects() {
     }
   }
 
+  async function uploadToBucket(file: File, kind: 'image' | 'html') {
+    const ext = kind === 'html' ? 'html' : file.name.split('.').pop() || 'png';
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
+      contentType: kind === 'html' ? 'text/html' : file.type,
+      upsert: false,
+    });
+    if (error) throw error;
+    return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+  }
+
+  async function handleScreenshot(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setMessage('❌ Envie um arquivo de imagem');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    setUploadingShot(true);
+    try {
+      const url = await uploadToBucket(file, 'image');
+      setFormData((f) => ({ ...f, screenshot: url }));
+      setMessage('✅ Imagem enviada!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err: any) {
+      setMessage(`❌ Erro no upload: ${err.message || 'tente novamente'}`);
+    } finally {
+      setUploadingShot(false);
+      if (shotRef.current) shotRef.current.value = '';
+    }
+  }
+
+  async function handleDemo(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.endsWith('.html')) {
+      setMessage('❌ Envie um arquivo .html (com CSS/JS embutidos)');
+      setTimeout(() => setMessage(''), 3000);
+      return;
+    }
+    setUploadingDemo(true);
+    try {
+      const url = await uploadToBucket(file, 'html');
+      setFormData((f) => ({ ...f, demoUrl: url }));
+      setMessage('✅ HTML enviado!');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err: any) {
+      setMessage(`❌ Erro no upload: ${err.message || 'tente novamente'}`);
+    } finally {
+      setUploadingDemo(false);
+      if (demoRef.current) demoRef.current.value = '';
+    }
+  }
+
   function startNew() {
-    setFormData({ id: '', name: '', description: '', tech: [], demoUrl: '' });
+    setFormData({ id: '', name: '', description: '', tech: [], demoUrl: '', screenshot: '' });
     setEditing('new');
   }
 
@@ -66,17 +129,17 @@ export default function AdminProjects() {
 
   async function saveProject() {
     if (!formData.name || !formData.description) {
-      setMessage('❌ Preencha todos os campos');
+      setMessage('❌ Preencha nome e descrição');
       return;
     }
 
     try {
-      // Map UI demoUrl -> DB snake_case demo_url, drop empty id
       const payload = {
         name: formData.name,
         description: formData.description,
         tech: formData.tech,
         demo_url: formData.demoUrl || null,
+        screenshot: formData.screenshot || null,
       };
       if (formData.id) {
         const { error } = await supabase
@@ -85,9 +148,7 @@ export default function AdminProjects() {
           .eq('id', formData.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from('projects')
-          .insert([payload]);
+        const { error } = await supabase.from('projects').insert([payload]);
         if (error) throw error;
       }
 
@@ -103,11 +164,7 @@ export default function AdminProjects() {
 
   async function deleteProject(id: string) {
     try {
-      const { error } = await supabase
-        .from('projects')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('projects').delete().eq('id', id);
       if (error) throw error;
       setProjects(projects.filter((p) => p.id !== id));
       setMessage('✅ Projeto removido!');
@@ -161,15 +218,93 @@ export default function AdminProjects() {
               />
             </div>
 
+            {/* Imagem (screenshot) */}
             <div>
-              <label className="block text-sm mb-2">URL Demo</label>
-              <input
-                type="text"
-                value={formData.demoUrl || ''}
-                onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-[#7CFF3B] text-sm"
-                placeholder="/projects/projeto/index.html"
-              />
+              <label className="block text-sm mb-2">Imagem do Projeto</label>
+              {formData.screenshot ? (
+                <div className="mb-2 flex items-center gap-3 p-2 bg-gray-800 rounded-lg">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={formData.screenshot}
+                    alt="Preview"
+                    className="h-16 w-24 object-cover rounded"
+                  />
+                  <span className="text-xs text-gray-400 flex-1 truncate">Imagem enviada</span>
+                  <button
+                    onClick={() => setFormData({ ...formData, screenshot: '' })}
+                    className="p-1 text-red-400 hover:bg-red-900/20 rounded"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : null}
+              <label className="flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-[#7CFF3B] hover:bg-[#7CFF3B]/5 transition-colors text-sm">
+                <input
+                  ref={shotRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleScreenshot}
+                  disabled={uploadingShot}
+                  className="hidden"
+                />
+                {uploadingShot ? (
+                  <>
+                    <Loader size={16} className="animate-spin text-[#7CFF3B]" /> Enviando imagem...
+                  </>
+                ) : (
+                  <>
+                    <Upload size={16} className="text-[#7CFF3B]" />
+                    {formData.screenshot ? 'Trocar imagem' : 'Enviar imagem (PNG/JPG)'}
+                  </>
+                )}
+              </label>
+            </div>
+
+            {/* Demo HTML */}
+            <div>
+              <label className="block text-sm mb-2">Demo (HTML)</label>
+              {formData.demoUrl ? (
+                <div className="mb-2 flex items-center gap-2 p-2 bg-gray-800 rounded-lg">
+                  <span className="text-xs text-gray-400 flex-1 truncate">{formData.demoUrl}</span>
+                  <a
+                    href={formData.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-1 text-[#7CFF3B] hover:bg-[#7CFF3B]/10 rounded"
+                  >
+                    <ExternalLink size={16} />
+                  </a>
+                  <button
+                    onClick={() => setFormData({ ...formData, demoUrl: '' })}
+                    className="p-1 text-red-400 hover:bg-red-900/20 rounded"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : null}
+              <label className="flex items-center justify-center gap-2 px-4 py-3 border border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-[#7CFF3B] hover:bg-[#7CFF3B]/5 transition-colors text-sm">
+                <input
+                  ref={demoRef}
+                  type="file"
+                  accept=".html,text/html"
+                  onChange={handleDemo}
+                  disabled={uploadingDemo}
+                  className="hidden"
+                />
+                {uploadingDemo ? (
+                  <>
+                    <Loader size={16} className="animate-spin text-[#7CFF3B]" /> Enviando HTML...
+                  </>
+                ) : (
+                  <>
+                    <Upload size={16} className="text-[#7CFF3B]" />
+                    {formData.demoUrl ? 'Trocar HTML' : 'Enviar HTML (arquivo único)'}
+                  </>
+                )}
+              </label>
+              <p className="mt-1 text-xs text-gray-500">
+                Envie um HTML com CSS/JS embutidos no próprio arquivo.
+              </p>
             </div>
 
             <div>
@@ -203,10 +338,7 @@ export default function AdminProjects() {
                 <button
                   onClick={() => {
                     if (newTech.trim()) {
-                      setFormData({
-                        ...formData,
-                        tech: [...formData.tech, newTech],
-                      });
+                      setFormData({ ...formData, tech: [...formData.tech, newTech] });
                       setNewTech('');
                     }
                   }}
@@ -246,25 +378,33 @@ export default function AdminProjects() {
 
           <div className="space-y-3">
             {projects.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                Nenhum projeto adicionado
-              </div>
+              <div className="text-center py-8 text-gray-500">Nenhum projeto adicionado</div>
             ) : (
               projects.map((project) => (
                 <div key={project.id} className="p-4 bg-gray-900 border border-gray-800 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{project.name}</h3>
-                      <p className="text-sm text-gray-400 mt-1">{project.description}</p>
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {project.tech.map((t) => (
-                          <span key={t} className="text-xs bg-[#7CFF3B]/10 text-[#7CFF3B] px-2 py-1 rounded">
-                            {t}
-                          </span>
-                        ))}
+                  <div className="flex justify-between items-start gap-3">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      {project.screenshot ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={project.screenshot}
+                          alt={project.name}
+                          className="h-14 w-20 object-cover rounded shrink-0"
+                        />
+                      ) : null}
+                      <div className="min-w-0">
+                        <h3 className="font-semibold">{project.name}</h3>
+                        <p className="text-sm text-gray-400 mt-1">{project.description}</p>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {project.tech.map((t) => (
+                            <span key={t} className="text-xs bg-[#7CFF3B]/10 text-[#7CFF3B] px-2 py-1 rounded">
+                              {t}
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                       <button
                         onClick={() => editProject(project)}
                         className="p-2 text-[#7CFF3B] hover:bg-[#7CFF3B]/10 rounded"

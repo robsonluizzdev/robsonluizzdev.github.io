@@ -35,6 +35,7 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
           description: p.description,
           tech: p.tech || [],
           demoUrl: p.demo_url || undefined,
+          screenshot: p.screenshot || undefined,
         })),
         education: eduRes.data || [],
         contact: contactRes.data,
