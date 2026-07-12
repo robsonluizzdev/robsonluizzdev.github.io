@@ -18,6 +18,11 @@ export default function ProjectModal({
   demoUrl,
 }: ProjectModalProps) {
   const [isMobile, setIsMobile] = useState(false);
+  const [srcDoc, setSrcDoc] = useState<string | null>(null);
+
+  // Remote (uploaded) demos are served as text/plain by Storage, so an
+  // <iframe src> would show source. Fetch and render them via srcDoc.
+  const isRemote = /^https?:\/\//i.test(demoUrl);
 
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
@@ -26,6 +31,26 @@ export default function ProjectModal({
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (open && isRemote) {
+      setSrcDoc(null);
+      fetch(demoUrl)
+        .then((r) => r.text())
+        .then((html) => {
+          if (!cancelled) setSrcDoc(html);
+        })
+        .catch(() => {
+          if (!cancelled) setSrcDoc(null);
+        });
+    } else {
+      setSrcDoc(null);
+    }
+    return () => {
+      cancelled = true;
+    };
+  }, [open, demoUrl, isRemote]);
 
   useEffect(() => {
     if (!open) return;
@@ -85,11 +110,22 @@ export default function ProjectModal({
 
             <div className="flex flex-1 items-center justify-center overflow-auto bg-[#0a0b0d] p-0 sm:p-6">
               <div className="h-full w-full overflow-hidden sm:rounded-2xl sm:border sm:border-zinc-800">
-                <iframe
-                  src={demoUrl}
-                  title={title}
-                  className="h-full w-full border-0 bg-white"
-                />
+                {isRemote ? (
+                  <iframe
+                    srcDoc={
+                      srcDoc ??
+                      "<!doctype html><body style='margin:0;background:#0a0b0d;color:#888;font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh'>Carregando demo…</body>"
+                    }
+                    title={title}
+                    className="h-full w-full border-0 bg-white"
+                  />
+                ) : (
+                  <iframe
+                    src={demoUrl}
+                    title={title}
+                    className="h-full w-full border-0 bg-white"
+                  />
+                )}
               </div>
             </div>
           </motion.div>
