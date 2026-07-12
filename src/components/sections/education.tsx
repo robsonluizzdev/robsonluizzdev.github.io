@@ -3,9 +3,14 @@
 import { motion } from "framer-motion";
 import { GraduationCap } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
-import { education } from "@/lib/data";
+import { education as staticEducation } from "@/lib/data";
+import { usePortfolioContext } from "@/components/portfolio-provider";
 
 export default function Education() {
+  const { data } = usePortfolioContext();
+  const education: { course: string; institution: string }[] =
+    data?.education?.length ? data.education : staticEducation;
+
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10">

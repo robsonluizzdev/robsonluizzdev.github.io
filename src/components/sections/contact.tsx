@@ -4,7 +4,12 @@ import { motion } from "framer-motion";
 import type { ComponentType } from "react";
 import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
-import { contactInfo, email, whatsappNumber } from "@/lib/data";
+import {
+  contactInfo as staticContactInfo,
+  email as staticEmail,
+  whatsappNumber as staticWhatsapp,
+} from "@/lib/data";
+import { usePortfolioContext } from "@/components/portfolio-provider";
 
 function LinkedinIcon({ size = 18 }: { size?: number }) {
   return (
@@ -28,6 +33,33 @@ const contactIcons: Record<string, ComponentType<{ size?: number }>> = {
 };
 
 export default function Contact() {
+  const { data } = usePortfolioContext();
+  const c = data?.contact;
+  const email = c?.email || staticEmail;
+  const whatsappNumber = c?.whatsapp || staticWhatsapp;
+  const contactInfo = c
+    ? [
+        { label: "Email", value: c.email, href: `mailto:${c.email}` },
+        {
+          label: "Telefone",
+          value: c.phone,
+          href: `tel:+${(c.whatsapp || "").replace(/\D/g, "")}`,
+        },
+        {
+          label: "LinkedIn",
+          value: c.linkedin,
+          href: c.linkedin?.startsWith("http")
+            ? c.linkedin
+            : `https://${c.linkedin}`,
+        },
+        {
+          label: "WhatsApp",
+          value: "Enviar mensagem",
+          href: `https://wa.me/${c.whatsapp}`,
+        },
+      ]
+    : staticContactInfo;
+
   return (
     <section id="contato" className="relative py-24 md:py-32">
       <div className="pointer-events-none absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-[#7CFF3B]/20 blur-[120px]" />

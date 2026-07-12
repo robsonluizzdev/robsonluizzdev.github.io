@@ -2,9 +2,14 @@
 
 import { motion } from "framer-motion";
 import { Reveal } from "@/components/motion/reveal";
-import { technologies } from "@/lib/data";
+import { technologies as staticTechnologies } from "@/lib/data";
+import { usePortfolioContext } from "@/components/portfolio-provider";
 
 export default function Technologies() {
+  const { data } = usePortfolioContext();
+  const technologies: string[] =
+    data?.technologies?.length ? data.technologies : staticTechnologies;
+
   return (
     <section className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 md:px-10">

@@ -1,7 +1,14 @@
+"use client";
+
 import { Reveal } from "@/components/motion/reveal";
-import { experience } from "@/lib/data";
+import { experience as staticExperience } from "@/lib/data";
+import { usePortfolioContext } from "@/components/portfolio-provider";
 
 export default function Experience() {
+  const { data } = usePortfolioContext();
+  const experience: { company: string; role: string; items: string[] }[] =
+    data?.experiences?.length ? data.experiences : staticExperience;
+
   return (
     <section id="experiencia" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6 md:px-10">

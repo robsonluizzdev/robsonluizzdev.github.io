@@ -10,7 +10,8 @@ import ProjectModal from "@/components/project-modal";
 import SixGramLogo from "@/components/logos/sixgram-logo";
 import FinTrackLogo from "@/components/logos/fintrack-logo";
 import LexAureaLogo from "@/components/logos/lexaurea-logo";
-import { projects } from "@/lib/data";
+import { projects as staticProjects } from "@/lib/data";
+import { usePortfolioContext } from "@/components/portfolio-provider";
 
 const logos: Record<string, ComponentType<{ className?: string }>> = {
   SixGram: SixGramLogo,
@@ -18,7 +19,22 @@ const logos: Record<string, ComponentType<{ className?: string }>> = {
   "LEX & AUREA Advogados": LexAureaLogo,
 };
 
+// Screenshots are static assets keyed by project name
+const screenshots: Record<string, string> = {
+  SixGram: "/projects/sixgram/screenshot.png",
+  "FinTrack Dashboard": "/projects/fintrack/screenshot.png",
+  "LEX & AUREA Advogados": "/projects/lexaurea/screenshot.png",
+};
+
 export default function Projects() {
+  const { data } = usePortfolioContext();
+  const projects = data?.projects?.length
+    ? data.projects.map((p: { name: string; description: string; tech: string[]; demoUrl?: string }) => ({
+        ...p,
+        screenshot: screenshots[p.name],
+      }))
+    : staticProjects;
+
   const [activeProject, setActiveProject] = useState<number | null>(null);
   const active = activeProject !== null ? projects[activeProject] : null;
 
