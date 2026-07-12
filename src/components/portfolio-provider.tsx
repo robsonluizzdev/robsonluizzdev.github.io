@@ -19,10 +19,10 @@ export function PortfolioProvider({ children }: { children: React.ReactNode }) {
     try {
       const [aboutRes, techRes, expRes, projRes, eduRes, contactRes] = await Promise.all([
         supabase.from('about').select('*').single(),
-        supabase.from('technologies').select('name').order('name'),
-        supabase.from('experiences').select('*').order('company'),
-        supabase.from('projects').select('*').order('name'),
-        supabase.from('education').select('*').order('course'),
+        supabase.from('technologies').select('name').order('sort_order', { nullsFirst: false }).order('name'),
+        supabase.from('experiences').select('*').order('sort_order', { nullsFirst: false }).order('company'),
+        supabase.from('projects').select('*').order('sort_order', { nullsFirst: false }).order('name'),
+        supabase.from('education').select('*').order('sort_order', { nullsFirst: false }).order('course'),
         supabase.from('contact').select('*').single(),
       ]);
 

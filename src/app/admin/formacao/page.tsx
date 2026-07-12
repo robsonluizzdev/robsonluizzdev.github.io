@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Save, Trash2, Plus, Edit2 } from 'lucide-react';
+import { Save, Trash2, Plus, Edit2, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Education {
   id: string;
   course: string;
   institution: string;
+  sort_order?: number | null;
 }
 
 export default function AdminEducation() {
@@ -30,6 +31,7 @@ export default function AdminEducation() {
       const { data, error } = await supabase
         .from('education')
         .select('*')
+        .order('sort_order', { nullsFirst: false })
         .order('course');
 
       if (error) throw error;
@@ -66,9 +68,11 @@ export default function AdminEducation() {
           .eq('id', id);
         if (error) throw error;
       } else {
+        const nextOrder =
+          educations.reduce((max, e) => Math.max(max, e.sort_order || 0), 0) + 1;
         const { error } = await supabase
           .from('education')
-          .insert([payload]);
+          .insert([{ ...payload, sort_order: nextOrder }]);
         if (error) throw error;
       }
 
@@ -95,6 +99,25 @@ export default function AdminEducation() {
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage('❌ Erro ao remover');
+      console.error(err);
+    }
+  }
+
+  async function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= educations.length) return;
+    const a = educations[index];
+    const b = educations[target];
+    const orderA = a.sort_order ?? index + 1;
+    const orderB = b.sort_order ?? target + 1;
+    try {
+      await Promise.all([
+        supabase.from('education').update({ sort_order: orderB }).eq('id', a.id),
+        supabase.from('education').update({ sort_order: orderA }).eq('id', b.id),
+      ]);
+      await fetchEducations();
+    } catch (err) {
+      setMessage('❌ Erro ao reordenar');
       console.error(err);
     }
   }
@@ -178,13 +201,29 @@ export default function AdminEducation() {
                 Nenhuma formação adicionada
               </div>
             ) : (
-              educations.map((edu) => (
+              educations.map((edu, index) => (
                 <div key={edu.id} className="p-4 bg-gray-900 border border-gray-800 rounded-lg flex justify-between items-start">
                   <div>
                     <h3 className="font-semibold">{edu.course}</h3>
                     <p className="text-sm text-gray-400">{edu.institution}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1">
+                    <button
+                      onClick={() => move(index, -1)}
+                      disabled={index === 0}
+                      className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Mover para cima"
+                    >
+                      <ChevronUp size={18} />
+                    </button>
+                    <button
+                      onClick={() => move(index, 1)}
+                      disabled={index === educations.length - 1}
+                      className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                      title="Mover para baixo"
+                    >
+                      <ChevronDown size={18} />
+                    </button>
                     <button
                       onClick={() => editEducation(edu)}
                       className="p-2 text-[#7CFF3B] hover:bg-[#7CFF3B]/10 rounded"

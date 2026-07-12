@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Save, Trash2, Plus, Loader, Edit2, X } from 'lucide-react';
+import { Save, Trash2, Plus, Loader, Edit2, X, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Experience {
   id: string;
   company: string;
   role: string;
   items: string[];
+  sort_order?: number | null;
 }
 
 export default function AdminExperience() {
@@ -33,7 +34,8 @@ export default function AdminExperience() {
       const { data, error } = await supabase
         .from('experiences')
         .select('*')
-        .order('id');
+        .order('sort_order', { nullsFirst: false })
+        .order('company');
 
       if (error) throw error;
       setExperiences(data || []);
@@ -70,9 +72,11 @@ export default function AdminExperience() {
           .eq('id', id);
         if (error) throw error;
       } else {
+        const nextOrder =
+          experiences.reduce((max, e) => Math.max(max, e.sort_order || 0), 0) + 1;
         const { error } = await supabase
           .from('experiences')
-          .insert([payload]);
+          .insert([{ ...payload, sort_order: nextOrder }]);
         if (error) throw error;
       }
 
@@ -99,6 +103,25 @@ export default function AdminExperience() {
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage('❌ Erro ao remover');
+      console.error(err);
+    }
+  }
+
+  async function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= experiences.length) return;
+    const a = experiences[index];
+    const b = experiences[target];
+    const orderA = a.sort_order ?? index + 1;
+    const orderB = b.sort_order ?? target + 1;
+    try {
+      await Promise.all([
+        supabase.from('experiences').update({ sort_order: orderB }).eq('id', a.id),
+        supabase.from('experiences').update({ sort_order: orderA }).eq('id', b.id),
+      ]);
+      await fetchExperiences();
+    } catch (err) {
+      setMessage('❌ Erro ao reordenar');
       console.error(err);
     }
   }
@@ -225,7 +248,7 @@ export default function AdminExperience() {
                 Nenhuma experiência adicionada
               </div>
             ) : (
-              experiences.map((exp) => (
+              experiences.map((exp, index) => (
                 <div key={exp.id} className="p-4 bg-gray-900 border border-gray-800 rounded-lg">
                   <div className="flex justify-between items-start">
                     <div>
@@ -237,7 +260,23 @@ export default function AdminExperience() {
                         ))}
                       </ul>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => move(index, -1)}
+                        disabled={index === 0}
+                        className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover para cima"
+                      >
+                        <ChevronUp size={18} />
+                      </button>
+                      <button
+                        onClick={() => move(index, 1)}
+                        disabled={index === experiences.length - 1}
+                        className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover para baixo"
+                      >
+                        <ChevronDown size={18} />
+                      </button>
                       <button
                         onClick={() => editExperience(exp)}
                         className="p-2 text-[#7CFF3B] hover:bg-[#7CFF3B]/10 rounded"

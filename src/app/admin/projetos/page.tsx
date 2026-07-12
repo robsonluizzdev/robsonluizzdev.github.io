@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Save, Trash2, Plus, Edit2, X, Upload, Loader, ExternalLink } from 'lucide-react';
+import { Save, Trash2, Plus, Edit2, X, Upload, Loader, ExternalLink, ChevronUp, ChevronDown } from 'lucide-react';
 
 interface Project {
   id: string;
@@ -11,6 +11,7 @@ interface Project {
   tech: string[];
   demoUrl?: string;
   screenshot?: string;
+  sort_order?: number | null;
 }
 
 const BUCKET = 'projects';
@@ -43,6 +44,7 @@ export default function AdminProjects() {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
+        .order('sort_order', { nullsFirst: false })
         .order('name');
 
       if (error) throw error;
@@ -53,6 +55,7 @@ export default function AdminProjects() {
         tech: p.tech || [],
         demoUrl: p.demo_url || '',
         screenshot: p.screenshot || '',
+        sort_order: p.sort_order,
       }));
       setProjects(mapped);
     } catch (err) {
@@ -148,7 +151,11 @@ export default function AdminProjects() {
           .eq('id', formData.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from('projects').insert([payload]);
+        const nextOrder =
+          projects.reduce((max, p) => Math.max(max, p.sort_order || 0), 0) + 1;
+        const { error } = await supabase
+          .from('projects')
+          .insert([{ ...payload, sort_order: nextOrder }]);
         if (error) throw error;
       }
 
@@ -171,6 +178,25 @@ export default function AdminProjects() {
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage('❌ Erro ao remover');
+      console.error(err);
+    }
+  }
+
+  async function move(index: number, dir: -1 | 1) {
+    const target = index + dir;
+    if (target < 0 || target >= projects.length) return;
+    const a = projects[index];
+    const b = projects[target];
+    const orderA = a.sort_order ?? index + 1;
+    const orderB = b.sort_order ?? target + 1;
+    try {
+      await Promise.all([
+        supabase.from('projects').update({ sort_order: orderB }).eq('id', a.id),
+        supabase.from('projects').update({ sort_order: orderA }).eq('id', b.id),
+      ]);
+      await fetchProjects();
+    } catch (err) {
+      setMessage('❌ Erro ao reordenar');
       console.error(err);
     }
   }
@@ -380,7 +406,7 @@ export default function AdminProjects() {
             {projects.length === 0 ? (
               <div className="text-center py-8 text-gray-500">Nenhum projeto adicionado</div>
             ) : (
-              projects.map((project) => (
+              projects.map((project, index) => (
                 <div key={project.id} className="p-4 bg-gray-900 border border-gray-800 rounded-lg">
                   <div className="flex justify-between items-start gap-3">
                     <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -404,7 +430,23 @@ export default function AdminProjects() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-2 shrink-0">
+                    <div className="flex gap-1 shrink-0">
+                      <button
+                        onClick={() => move(index, -1)}
+                        disabled={index === 0}
+                        className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover para cima"
+                      >
+                        <ChevronUp size={18} />
+                      </button>
+                      <button
+                        onClick={() => move(index, 1)}
+                        disabled={index === projects.length - 1}
+                        className="p-2 text-gray-400 hover:bg-gray-800 rounded disabled:opacity-30 disabled:cursor-not-allowed"
+                        title="Mover para baixo"
+                      >
+                        <ChevronDown size={18} />
+                      </button>
                       <button
                         onClick={() => editProject(project)}
                         className="p-2 text-[#7CFF3B] hover:bg-[#7CFF3B]/10 rounded"
