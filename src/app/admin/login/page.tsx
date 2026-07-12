@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { Loader } from 'lucide-react';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState('admin@robsonluiz.dev');
+  const [email, setEmail] = useState('robsonluizmmpp@gmail.com');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -68,7 +68,7 @@ export default function AdminLogin() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-900/50 border border-gray-800 rounded-lg text-white focus:outline-none focus:border-[#7CFF3B] focus:bg-gray-900/80 transition-all backdrop-blur-sm"
-              placeholder="admin@robsonluiz.dev"
+              placeholder="robsonluizmmpp@gmail.com"
               required
             />
           </div>

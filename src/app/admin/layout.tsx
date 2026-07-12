@@ -13,6 +13,7 @@ const menuItems = [
   { label: 'Experiência', href: '/admin/experiencia' },
   { label: 'Projetos', href: '/admin/projetos' },
   { label: 'Formação', href: '/admin/formacao' },
+  { label: 'Currículo', href: '/admin/curriculo' },
   { label: 'Contato', href: '/admin/contato' },
 ];
 
