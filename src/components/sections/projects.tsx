@@ -26,10 +26,18 @@ const screenshots: Record<string, string> = {
   "LEX & AUREA Advogados": "/projects/lexaurea/screenshot.png",
 };
 
+type ProjectItem = {
+  name: string;
+  description: string;
+  tech: string[];
+  demoUrl?: string;
+  screenshot?: string;
+};
+
 export default function Projects() {
   const { data } = usePortfolioContext();
-  const projects = data?.projects?.length
-    ? data.projects.map((p: { name: string; description: string; tech: string[]; demoUrl?: string; screenshot?: string }) => ({
+  const projects: ProjectItem[] = data?.projects?.length
+    ? data.projects.map((p: ProjectItem) => ({
         ...p,
         // Prefer uploaded screenshot; fall back to bundled asset by name
         screenshot: p.screenshot || screenshots[p.name],
