@@ -16,7 +16,8 @@
       "Bash(git commit -m 'Remove all Wrangler/OpenNext configuration for clean Cloudflare Pages deployment *)",
       "Bash(npm install *)",
       "Bash(git commit -m 'Add admin dashboard with full CRUD management *)",
-      "Bash(git commit -m 'Improve admin login page design and remove registration *)"
+      "Bash(git commit -m 'Improve admin login page design and remove registration *)",
+      "Bash(git commit -m 'Add real-time data synchronization between admin and frontend *)"
     ]
   }
 }

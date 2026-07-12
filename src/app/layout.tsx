@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import CustomCursor from "@/components/custom-cursor";
 import LoadingScreen from "@/components/loading-screen";
 import WhatsappButton from "@/components/whatsapp-button";
+import { PortfolioProvider } from "@/components/portfolio-provider";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -36,12 +37,14 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} h-full antialiased scroll-smooth`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <LoadingScreen />
-          <CustomCursor />
-          {children}
-          <WhatsappButton />
-        </ThemeProvider>
+        <PortfolioProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <LoadingScreen />
+            <CustomCursor />
+            {children}
+            <WhatsappButton />
+          </ThemeProvider>
+        </PortfolioProvider>
       </body>
     </html>
   );
