@@ -4,7 +4,11 @@
       "Bash(git init *)",
       "Bash(git config *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Initial commit: Projeto Portfólio *)"
+      "Bash(git commit -m 'Initial commit: Projeto Portfólio *)",
+      "Bash(git branch *)",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(git commit -m 'Remove OpenNext/Wrangler configuration for Cloudflare Pages *)"
     ]
   }
 }
