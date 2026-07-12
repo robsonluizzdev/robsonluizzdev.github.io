@@ -8,7 +8,9 @@
       "Bash(git branch *)",
       "Bash(git remote *)",
       "Bash(git push *)",
-      "Bash(git commit -m 'Remove OpenNext/Wrangler configuration for Cloudflare Pages *)"
+      "Bash(git commit -m 'Remove OpenNext/Wrangler configuration for Cloudflare Pages *)",
+      "Bash(rm -f wrangler.toml)",
+      "Bash(git commit -m 'Clean Cloudflare Pages configuration *)"
     ]
   }
 }
