@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FinTrack — Analytics inteligentes para decisões rápidas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-dot"></span>
+      <span class="logo-text">FinTrack</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-label">Menu</p>
+      <ul>
+        <li class="nav-item active"><a href="#"><i class="fa-solid fa-house"></i> <span>Visão Geral</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-credit-card"></i> <span>Receitas</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-arrow-trend-down"></i> <span>Despesas</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-chart-line"></i> <span>Relatórios</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-chart-pie"></i> <span>Analytics</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-sack-dollar"></i> <span>Fluxo de Caixa</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-building-columns"></i> <span>Contas</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-users"></i> <span>Clientes</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-file-invoice"></i> <span>Faturas</span></a></li>
+        <li class="nav-item"><a href="#"><i class="fa-solid fa-gear"></i> <span>Configurações</span></a></li>
+      </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a href="#" class="footer-link"><i class="fa-regular fa-circle-question"></i> <span>Ajuda</span></a>
+      <a href="#" class="footer-link"><i class="fa-regular fa-bell"></i> <span>Notificações</span></a>
+      <a href="#" class="footer-link profile-link">
+        <span class="avatar-mini">MC</span>
+        <span>Perfil</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="content">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Pesquisar..." disabled />
+      </div>
+
+      <div class="header-right">
+        <button class="icon-btn" aria-label="Notificações">
+          <i class="fa-regular fa-bell"></i>
+          <span class="badge">3</span>
+        </button>
+        <div class="user-box">
+          <div class="user-info">
+            <span class="user-name">Marina Costa</span>
+            <span class="user-role">Administrador Financeiro</span>
+          </div>
+          <div class="avatar">MC</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <main class="dashboard">
+      <div class="dashboard-grid">
+
+        <div class="col-main">
+
+          <!-- Cards principais -->
+          <section class="report-row">
+            <div class="card card-report">
+              <div class="card-header">
+                <h2>Relatório Financeiro</h2>
+              </div>
+              <p class="report-value">R$ 586.750,00</p>
+              <p class="report-caption">Receita total dos últimos 30 dias</p>
+              <div class="mini-line-chart" aria-hidden="true">
+                <svg viewBox="0 0 220 60" preserveAspectRatio="none">
+                  <polyline points="0,45 30,38 60,42 90,25 120,30 150,15 180,20 220,5" />
+                </svg>
+              </div>
+              <span class="trend trend-up"><i class="fa-solid fa-arrow-up"></i> +12,4%</span>
+            </div>
+
+            <div class="card card-chart">
+              <div class="card-header">
+                <h2>Desempenho Mensal</h2>
+                <button class="filter-btn" disabled>
+                  Últimos 6 meses <i class="fa-solid fa-chevron-down"></i>
+                </button>
+              </div>
+              <div class="bar-chart">
+                <div class="bar-group"><div class="bar bar-h1"></div><span>Jan</span></div>
+                <div class="bar-group"><div class="bar bar-h2"></div><span>Fev</span></div>
+                <div class="bar-group"><div class="bar bar-h3"></div><span>Mar</span></div>
+                <div class="bar-group"><div class="bar bar-h4"></div><span>Abr</span></div>
+                <div class="bar-group"><div class="bar bar-h5"></div><span>Mai</span></div>
+                <div class="bar-group"><div class="bar bar-h6"></div><span>Jun</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Cards menores -->
+          <section class="mini-cards">
+            <div class="mini-card">
+              <div class="mini-icon icon-green"><i class="fa-solid fa-sack-dollar"></i></div>
+              <p class="mini-value">R$ 586.750,00</p>
+              <p class="mini-label">Receita Total</p>
+              <span class="mini-underline underline-green"></span>
+            </div>
+            <div class="mini-card">
+              <div class="mini-icon icon-blue"><i class="fa-solid fa-chart-line"></i></div>
+              <p class="mini-value">R$ 425.940,00</p>
+              <p class="mini-label">Lucro Líquido</p>
+              <span class="mini-underline underline-blue"></span>
+            </div>
+            <div class="mini-card">
+              <div class="mini-icon icon-orange"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+              <p class="mini-value">R$ 25.944,00</p>
+              <p class="mini-label">Impostos</p>
+              <span class="mini-underline underline-orange"></span>
+            </div>
+          </section>
+
+          <!-- Tabela -->
+          <section class="table-section">
+            <div class="table-header">
+              <h2>Últimas Movimentações</h2>
+              <div class="table-filters">
+                <button class="filter-btn" disabled>Últimos 30 dias <i class="fa-solid fa-chevron-down"></i></button>
+                <div class="search-box search-box-sm">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" placeholder="Buscar" disabled />
+                </div>
+              </div>
+            </div>
+
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="cat-icon cat-blue"><i class="fa-solid fa-laptop-code"></i></span> Software</td>
+                    <td>Venda de Software</td>
+                    <td class="cell-value">R$ 68.000</td>
+                    <td>04 Jun 2026</td>
+                    <td><span class="status status-paid">Pago</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cat-icon cat-purple"><i class="fa-solid fa-briefcase"></i></span> Serviços</td>
+                    <td>Consultoria</td>
+                    <td class="cell-value">R$ 32.000</td>
+                    <td>02 Jun 2026</td>
+                    <td><span class="status status-pending">Pendente</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cat-icon cat-green"><i class="fa-solid fa-crown"></i></span> Assinatura</td>
+                    <td>Assinatura Premium</td>
+                    <td class="cell-value">R$ 890</td>
+                    <td>28 Mai 2026</td>
+                    <td><span class="status status-paid">Pago</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="cat-icon cat-orange"><i class="fa-solid fa-file-contract"></i></span> Licença</td>
+                    <td>Licenciamento</td>
+                    <td class="cell-value">R$ 12.500</td>
+                    <td>21 Mai 2026</td>
+                    <td><span class="status status-cancelled">Cancelado</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+        </div>
+
+        <!-- Lado direito -->
+        <div class="col-side">
+          <div class="card card-earning">
+            <p class="earning-label">Receita deste mês</p>
+            <p class="earning-value">R$ 239.400,00</p>
+            <p class="earning-caption">Atualize seu método de recebimento.</p>
+            <button class="btn-primary" disabled>Solicitar Saque</button>
+          </div>
+
+          <div class="card card-performance">
+            <h2>Desempenho Financeiro</h2>
+            <div class="performance-chart">
+              <div class="perf-row">
+                <span class="perf-label">Receitas</span>
+                <div class="perf-track"><div class="perf-fill perf-fill-blue"></div></div>
+              </div>
+              <div class="perf-row">
+                <span class="perf-label">Despesas</span>
+                <div class="perf-track"><div class="perf-fill perf-fill-orange"></div></div>
+              </div>
+              <div class="perf-row">
+                <span class="perf-label">Lucro</span>
+                <div class="perf-track"><div class="perf-fill perf-fill-green"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</div>
+
+</body>
+</html>

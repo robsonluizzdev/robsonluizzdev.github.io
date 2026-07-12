@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LEX &amp; AUREA Advogados — Excelência Jurídica, Soluções Inteligentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --black: #111111;
+  --white: #ffffff;
+  --gold: #c8a96a;
+  --gold-light: #ddc99a;
+  --gray-light: #f5f5f5;
+  --gray-dark: #2f2f2f;
+  --serif: "Playfair Display", serif;
+  --sans: "Inter", sans-serif;
+  --radius: 18px;
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  color: var(--black);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+h1, h2, h3 { font-family: var(--serif); letter-spacing: -0.01em; }
+.gold { color: var(--gold); }
+.section { padding: 110px 0; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  margin-bottom: 18px;
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+}
+
+/* ============ Header ============ */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 48px;
+  background: rgba(17, 17, 17, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.3s ease;
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--white);
+}
+.logo span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  gap: 40px;
+}
+.nav-links a {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.25s ease;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-links a:hover::after { width: 100%; }
+
+/* ============ Hero ============ */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(120deg, rgba(10,10,10,0.92) 20%, rgba(10,10,10,0.55) 60%, rgba(10,10,10,0.35) 100%),
+    url("https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1800&q=80") center/cover no-repeat;
+  color: var(--white);
+}
+.hero-content { max-width: 620px; }
+.hero h1 {
+  font-size: clamp(36px, 5vw, 58px);
+  line-height: 1.12;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+.hero p {
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 36px;
+  max-width: 520px;
+}
+.btn-row { display: flex; flex-wrap: wrap; gap: 18px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  cursor: default;
+}
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: #241a08;
+  box-shadow: 0 12px 30px rgba(200, 169, 106, 0.35);
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 18px 40px rgba(200, 169, 106, 0.45); }
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.14); border-color: var(--white); }
+
+/* ============ Sobre ============ */
+.about-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 72px;
+  align-items: center;
+}
+.about-image {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.about-image img { height: 520px; object-fit: cover; width: 100%; }
+.about-badge {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(17, 17, 17, 0.7);
+  backdrop-filter: blur(10px);
+  color: var(--white);
+  padding: 18px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(200, 169, 106, 0.4);
+}
+.about-badge strong { display: block; font-size: 26px; font-family: var(--serif); color: var(--gold); }
+.about-badge span { font-size: 12px; color: rgba(255, 255, 255, 0.7); }
+
+.about-text h2 { font-size: 36px; margin-bottom: 22px; }
+.about-text p {
+  color: var(--gray-dark);
+  line-height: 1.8;
+  font-size: 15px;
+  margin-bottom: 32px;
+}
+.perks { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.perk-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #241a08;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ============ Indicadores ============ */
+.stats-section { background: var(--gray-light); }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+.stat-card {
+  background: var(--white);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(200, 169, 106, 0.18);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  padding: 20px;
+}
+.stat-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 26px 60px rgba(200, 169, 106, 0.25);
+  border-color: var(--gold);
+}
+.stat-card strong {
+  font-family: var(--serif);
+  font-size: 34px;
+  color: var(--black);
+  display: block;
+}
+.stat-card span {
+  font-size: 12.5px;
+  color: var(--gray-dark);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* ============ Áreas de atuação ============ */
+.areas-header { text-align: center; max-width: 640px; margin: 0 auto 60px; }
+.areas-header h2 { font-size: 36px; margin-bottom: 16px; }
+.areas-header p { color: var(--gray-dark); font-size: 15px; line-height: 1.7; }
+.areas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+.area-card {
+  background: var(--white);
+  border: 1px solid #ececec;
+  border-radius: var(--radius);
+  padding: 38px 30px;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.area-card:hover {
+  transform: translateY(-10px);
+  box-shadow: var(--shadow);
+  border-color: var(--gold);
+}
+.area-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--black), var(--gray-dark));
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 22px;
+}
+.area-card h3 { font-size: 19px; margin-bottom: 10px; }
+.area-card p { font-size: 13.5px; color: var(--gray-dark); line-height: 1.6; }
+
+/* ============ Diferenciais ============ */
+.why-section {
+  background: var(--black);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+}
+.why-section::before {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(200,169,106,0.25), transparent 70%);
+}
+.why-header { text-align: center; max-width: 620px; margin: 0 auto 60px; position: relative; z-index: 1; }
+.why-header h2 { font-size: 34px; color: var(--white); }
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  position: relative;
+  z-index: 1;
+}
+.why-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 34px 26px;
+  backdrop-filter: blur(6px);
+  transition: transform 0.35s ease, border-color 0.35s ease, background 0.35s ease;
+}
+.why-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--gold);
+  background: rgba(200, 169, 106, 0.08);
+}
+.why-icon { font-size: 26px; margin-bottom: 18px; }
+.why-card h3 { font-size: 16px; font-family: var(--sans); font-weight: 700; margin-bottom: 10px; }
+.why-card p { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+/* ============ Equipe ============ */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 26px;
+}
+.team-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--shadow);
+  transition: transform 0.4s ease;
+}
+.team-card:hover { transform: translateY(-8px); }
+.team-photo { width: 100%; height: 330px; object-fit: cover; filter: grayscale(15%); transition: filter 0.4s ease; }
+.team-card:hover .team-photo { filter: grayscale(0%); }
+.team-info {
+  padding: 22px 22px 26px;
+  background: var(--white);
+  border: 1px solid #ececec;
+  border-top: none;
+}
+.team-info h3 { font-size: 17px; margin-bottom: 4px; }
+.team-info span { font-size: 12.5px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.team-social { display: flex; gap: 10px; margin-top: 16px; }
+.team-social a {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--gray-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--gray-dark);
+  transition: all 0.25s ease;
+}
+.team-social a:hover { background: var(--gold); color: #241a08; }
+
+/* ============ Depoimentos ============ */
+.testimonials-section { background: var(--gray-light); }
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.testi-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 34px 30px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease;
+}
+.testi-card:hover { transform: translateY(-6px); }
+.testi-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.testi-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 2px solid var(--gold); }
+.testi-name { font-size: 15px; font-weight: 700; }
+.stars { color: var(--gold); font-size: 13px; margin-top: 2px; }
+.testi-card p { font-size: 14px; color: var(--gray-dark); line-height: 1.7; font-style: italic; }
+
+/* ============ Processo ============ */
+.process-timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  position: relative;
+}
+.process-timeline::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  left: 40px;
+  right: 40px;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--gold) 0 8px, transparent 8px 16px);
+  z-index: 0;
+}
+.process-step {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  background: var(--white);
+  padding: 10px;
+}
+.process-number {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--black);
+  color: var(--gold);
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  border: 3px solid var(--gray-light);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.process-step:hover .process-number { transform: scale(1.08); background: var(--gold); color: #241a08; }
+.process-step h3 { font-family: var(--sans); font-size: 14.5px; font-weight: 700; margin-bottom: 6px; }
+.process-step p { font-size: 12.5px; color: var(--gray-dark); }
+
+/* ============ CTA ============ */
+.cta-banner {
+  background: linear-gradient(120deg, var(--gold-light), var(--gold));
+  border-radius: 28px;
+  padding: 64px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  color: #241a08;
+  box-shadow: 0 30px 60px rgba(200, 169, 106, 0.35);
+}
+.cta-banner h2 { font-size: 30px; max-width: 480px; }
+.cta-banner .btn {
+  background: var(--black);
+  color: var(--white);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+}
+.cta-banner .btn:hover { transform: translateY(-2px); background: var(--gray-dark); }
+
+/* ============ Footer ============ */
+.footer {
+  background: var(--black);
+  color: rgba(255,255,255,0.7);
+  padding: 80px 0 32px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 40px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.footer-logo { font-family: var(--serif); font-size: 22px; color: var(--white); margin-bottom: 16px; }
+.footer-logo span { color: var(--gold); }
+.footer-grid p { font-size: 13.5px; line-height: 1.8; }
+.footer-col h4 { color: var(--white); font-size: 14px; margin-bottom: 18px; font-weight: 600; }
+.footer-col a, .footer-col li { display: block; font-size: 13.5px; margin-bottom: 12px; color: rgba(255,255,255,0.65); transition: color 0.25s ease; }
+.footer-col a:hover { color: var(--gold); }
+.footer-social { display: flex; gap: 12px; margin-top: 20px; }
+.footer-social a {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.footer-social a:hover { background: var(--gold); color: #241a08; border-color: var(--gold); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 28px;
+  font-size: 12.5px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ============ Responsivo ============ */
+@media (max-width: 1024px) {
+  .about-grid { grid-template-columns: 1fr; }
+  .about-image img { height: 380px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .areas-grid { grid-template-columns: repeat(2, 1fr); }
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+  .team-grid { grid-template-columns: repeat(2, 1fr); }
+  .testi-grid { grid-template-columns: 1fr; }
+  .process-timeline { grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 860px) {
+  .navbar { padding: 20px 24px; }
+  .nav-links { display: none; }
+  .section { padding: 70px 0; }
+  .container { padding: 0 22px; }
+  .process-timeline { grid-template-columns: 1fr; gap: 28px; }
+  .process-timeline::before { display: none; }
+  .cta-banner { flex-direction: column; text-align: center; padding: 48px 30px; }
+}
+
+@media (max-width: 620px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .areas-grid { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .perks { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .btn-row { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="navbar">
+  <div class="logo">LEX <span>&amp;</span> AUREA</div>
+  <nav class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#sobre">Sobre</a>
+    <a href="#areas">Áreas</a>
+    <a href="#equipe">Equipe</a>
+    <a href="#resultados">Resultados</a>
+    <a href="#contato">Contato</a>
+  </nav>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-content">
+      <p class="eyebrow">Lex &amp; Aurea Advogados</p>
+      <h1>Advocacia Estratégica para Empresas e Pessoas</h1>
+      <p>Atuamos oferecendo soluções jurídicas personalizadas, focadas em resultados, segurança jurídica e atendimento de excelência para nossos clientes.</p>
+      <div class="btn-row">
+        <span class="btn btn-gold">Agendar Consulta</span>
+        <span class="btn btn-ghost">Conheça o Escritório</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Sobre -->
+<section class="section" id="sobre">
+  <div class="container about-grid">
+    <div class="about-image">
+      <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=80" alt="Reunião jurídica" />
+      <div class="about-badge">
+        <strong>25+</strong>
+        <span>Anos de tradição jurídica</span>
+      </div>
+    </div>
+    <div class="about-text">
+      <p class="eyebrow">Sobre o escritório</p>
+      <h2>Nossa <span class="gold">experiência</span> jurídica</h2>
+      <p>Com quase três décadas de atuação no mercado, o LEX &amp; AUREA acumula uma ampla experiência jurídica que nos posiciona entre os escritórios mais respeitados da América Latina. Combinamos conhecimento técnico, inovação e um profundo entendimento das complexidades do Direito, atendendo clientes nacionais e internacionais em diversas áreas.</p>
+      <div class="perks">
+        <div class="perk"><span class="perk-icon">✓</span> Atendimento Humanizado</div>
+        <div class="perk"><span class="perk-icon">✓</span> Estratégias Personalizadas</div>
+        <div class="perk"><span class="perk-icon">✓</span> Ética Profissional</div>
+        <div class="perk"><span class="perk-icon">✓</span> Compromisso com Resultados</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Indicadores -->
+<section class="section stats-section">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card"><strong>+500</strong><span>Casos concluídos</span></div>
+      <div class="stat-card"><strong>98%</strong><span>Clientes satisfeitos</span></div>
+      <div class="stat-card"><strong>25</strong><span>Anos de experiência</span></div>
+      <div class="stat-card"><strong>12</strong><span>Especialistas</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Áreas de atuação -->
+<section class="section" id="areas">
+  <div class="container">
+    <div class="areas-header">
+      <p class="eyebrow" style="justify-content:center">Áreas de atuação</p>
+      <h2>Soluções jurídicas completas</h2>
+      <p>Contamos com especialistas dedicados às principais frentes do Direito empresarial e pessoal, sempre com foco em resultado e segurança jurídica.</p>
+    </div>
+    <div class="areas-grid">
+      <div class="area-card">
+        <div class="area-icon">⚖</div>
+        <h3>Direito Empresarial</h3>
+        <p>Consultoria estratégica para negócios, contratos e governança corporativa.</p>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">📜</div>
+        <h3>Direito Civil</h3>
+        <p>Defesa de direitos patrimoniais, contratuais e obrigacionais.</p>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🤝</div>
+        <h3>Direito Trabalhista</h3>
+        <p>Assessoria completa em relações de trabalho e litígios trabalhistas.</p>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">💰</div>
+        <h3>Direito Tributário</h3>
+        <p>Planejamento fiscal e defesa em processos administrativos e judiciais.</p>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">👪</div>
+        <h3>Direito de Família</h3>
+        <p>Atuação sensível e estratégica em questões familiares e sucessórias.</p>
+      </div>
+      <div class="area-card">
+        <div class="area-icon">🏛</div>
+        <h3>Direito Imobiliário</h3>
+        <p>Segurança jurídica em transações, locações e incorporações imobiliárias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Diferenciais -->
+<section class="section why-section">
+  <div class="container">
+    <div class="why-header">
+      <p class="eyebrow" style="justify-content:center">Diferenciais</p>
+      <h2>Por que escolher nosso escritório?</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🎯</div>
+        <h3>Atendimento Personalizado</h3>
+        <p>Cada cliente recebe uma estratégia jurídica sob medida para o seu caso.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">👥</div>
+        <h3>Equipe Especializada</h3>
+        <p>Advogados com vasta experiência nas mais diversas áreas do Direito.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📈</div>
+        <h3>Alta Taxa de Êxito</h3>
+        <p>Histórico consistente de resultados favoráveis para nossos clientes.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔎</div>
+        <h3>Transparência Total</h3>
+        <p>Comunicação clara e honesta em todas as etapas do processo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Equipe -->
+<section class="section" id="equipe">
+  <div class="container">
+    <div class="areas-header">
+      <p class="eyebrow" style="justify-content:center">Nossos advogados</p>
+      <h2>Uma equipe de excelência</h2>
+      <p>Profissionais qualificados e dedicados, selecionados por sua expertise técnica e comprometimento com os clientes.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-info">
+          <h3>Dr. Ricardo Monteiro</h3>
+          <span>Direito Empresarial</span>
+          <div class="team-social"><a href="#">in</a><a href="#">tw</a><a href="#">@</a></div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-info">
+          <h3>Dra. Helena Duarte</h3>
+          <span>Direito Civil</span>
+          <div class="team-social"><a href="#">in</a><a href="#">tw</a><a href="#">@</a></div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-info">
+          <h3>Dr. Felipe Azevedo</h3>
+          <span>Direito Tributário</span>
+          <div class="team-social"><a href="#">in</a><a href="#">tw</a><a href="#">@</a></div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-info">
+          <h3>Dra. Camila Vasconcelos</h3>
+          <span>Direito Trabalhista</span>
+          <div class="team-social"><a href="#">in</a><a href="#">tw</a><a href="#">@</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Depoimentos -->
+<section class="section testimonials-section" id="resultados">
+  <div class="container">
+    <div class="areas-header">
+      <p class="eyebrow" style="justify-content:center">Depoimentos</p>
+      <h2>O que dizem nossos clientes</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-head">
+          <img class="testi-avatar" src="https://randomuser.me/api/portraits/men/12.jpg" alt="Cliente" />
+          <div>
+            <div class="testi-name">Eduardo Salgado</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p>"O time do LEX &amp; AUREA conduziu nosso processo com muita transparência e competência. Recomendo fortemente."</p>
+      </div>
+      <div class="testi-card">
+        <div class="testi-head">
+          <img class="testi-avatar" src="https://randomuser.me/api/portraits/women/22.jpg" alt="Cliente" />
+          <div>
+            <div class="testi-name">Fernanda Lacerda</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p>"Atendimento humanizado do início ao fim. Me senti segura em cada etapa da negociação."</p>
+      </div>
+      <div class="testi-card">
+        <div class="testi-head">
+          <img class="testi-avatar" src="https://randomuser.me/api/portraits/men/56.jpg" alt="Cliente" />
+          <div>
+            <div class="testi-name">Otávio Ramires</div>
+            <div class="stars">★★★★★</div>
+          </div>
+        </div>
+        <p>"Resultado excelente em um caso complexo. Profissionalismo do início ao fim."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Processo -->
+<section class="section">
+  <div class="container">
+    <div class="areas-header">
+      <p class="eyebrow" style="justify-content:center">Processo</p>
+      <h2>Como funciona o atendimento</h2>
+    </div>
+    <div class="process-timeline">
+      <div class="process-step">
+        <div class="process-number">01</div>
+        <h3>Primeiro contato</h3>
+        <p>Entendimento inicial da sua necessidade jurídica.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-number">02</div>
+        <h3>Análise do caso</h3>
+        <p>Estudo aprofundado da documentação e do contexto.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-number">03</div>
+        <h3>Estratégia jurídica</h3>
+        <p>Definição do plano de ação mais adequado.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-number">04</div>
+        <h3>Acompanhamento</h3>
+        <p>Atualizações constantes sobre o andamento do caso.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-number">05</div>
+        <h3>Resultado</h3>
+        <p>Entrega da solução com segurança e transparência.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Precisa de orientação jurídica?</h2>
+      <span class="btn">Fale com nossa equipe</span>
+    </div>
+  </div>
+</section>
+
+<!-- Rodapé -->
+<footer class="footer" id="contato">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">LEX <span>&amp;</span> AUREA</div>
+        <p>Excelência Jurídica, Soluções Inteligentes. Escritório fictício criado para fins de demonstração.</p>
+        <div class="footer-social"><a href="#">in</a><a href="#">ig</a><a href="#">fb</a></div>
+      </div>
+      <div class="footer-col">
+        <h4>Menu</h4>
+        <a href="#home">Home</a>
+        <a href="#sobre">Sobre</a>
+        <a href="#areas">Áreas</a>
+        <a href="#equipe">Equipe</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <li>Av. Paulista, 1000 — São Paulo/SP</li>
+        <li>(11) 4000-1234</li>
+        <li>contato@lexaurea.adv.br</li>
+      </div>
+      <div class="footer-col">
+        <h4>Horário</h4>
+        <li>Seg – Sex: 9h às 19h</li>
+        <li>Sáb: 9h às 13h</li>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 LEX &amp; AUREA Advogados. Todos os direitos reservados.</span>
+      <span>Escritório fictício — apenas para fins demonstrativos.</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
