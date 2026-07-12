@@ -13,7 +13,9 @@
       "Bash(git commit -m 'Clean Cloudflare Pages configuration *)",
       "Bash(git commit -m 'Add Cloudflare Pages wrangler configuration *)",
       "Bash(rm -f wrangler.toml wrangler.jsonc open-next.config.ts .dev.vars public/_headers)",
-      "Bash(git commit -m 'Remove all Wrangler/OpenNext configuration for clean Cloudflare Pages deployment *)"
+      "Bash(git commit -m 'Remove all Wrangler/OpenNext configuration for clean Cloudflare Pages deployment *)",
+      "Bash(npm install *)",
+      "Bash(git commit -m 'Add admin dashboard with full CRUD management *)"
     ]
   }
 }
